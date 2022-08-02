@@ -12,7 +12,7 @@
 
 
 ## Steps
-- [ ] BE-  Build a go server that can respond to an endpoint
+- [x] BE-  Build a go server that can respond to an endpoint
 - [ ] BE/FE - Server sends HTML and JS to FE
 - [ ] FE - Page shows a user list, chat log, and input window
 - [ ] FE/BE - Websocket connection established on page load
