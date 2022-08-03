@@ -15,6 +15,6 @@ export function MessageHistory() {
 
 export function MessageInput() {
     return <div className="MessageInput">
-        Message Input
+        <input className="Input" type="text" placeholder="Chat Message" id="ChatInput" />
     </div>
 }
