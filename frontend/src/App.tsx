@@ -1,5 +1,6 @@
 import React from 'react';
 import './Reset.css'
+import './Global.css'
 import './App.css';
 import { ChatWindow } from "./components/ChatWindow"
 import { UserWindow } from './components/UserWindow';

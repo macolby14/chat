@@ -1,0 +1,14 @@
+.ChatWindow{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.MessageHistory {
+    border-bottom: var(--main-border);
+    flex-grow: 7;
+}
+
+.MessageInput {
+    flex-grow: 1;
+}
