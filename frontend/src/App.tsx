@@ -1,17 +1,19 @@
 import React from 'react';
 import './Reset.css'
 import './App.css';
+import { ChatWindow } from "./components/ChatWindow"
+import { UserWindow } from './components/UserWindow';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        Header
-      </header>
-      <body>
-        Body
-      </body>
-    </div>
+    <body className="App">
+      <div className="ChatWindowContainer">
+        <ChatWindow />
+      </div>
+      <div className="UserWindowContainer">
+        <UserWindow />
+      </div>
+    </body>
   );
 }
 
