@@ -58,6 +58,14 @@ func main() {
 	log.Println("Starting server...")
 	router := mux.NewRouter()
 
+	// chat setup
+	hub := newHub()
+	go hub.run()
+
+	router.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		serveWs(hub, w, r)
+	})
+
 	router.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {
 		// an example API handler
 		json.NewEncoder(w).Encode(map[string]bool{"ok": true})
