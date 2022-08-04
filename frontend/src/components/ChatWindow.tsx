@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import './ChatWindow.css'
 
 export function ChatWindow() {
@@ -13,8 +14,20 @@ export function MessageHistory() {
     </div>
 }
 
+
 export function MessageInput() {
+    const [input, setInput] = useState("");
+
+    function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+        if(e.code !== 'Enter'){ return; }
+        setInput("");
+        console.log(`TODO: Sent message ${input}`);
+    }
+
     return <div className="MessageInput">
-        <input className="Input" type="text" placeholder="Chat Message" id="ChatInput" />
+        <input className="Input" type="text" placeholder="Chat Message" id="ChatInput" 
+        onKeyDown={handleKeyDown}
+        value={input}
+        onChange = {(e) => setInput(e.target.value)} />
     </div>
 }
