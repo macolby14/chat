@@ -7,6 +7,7 @@ import { UserWindow } from './components/UserWindow';
 
 function App() {
   const [errorMessage, setErrorMessage] = useState("");
+  const [conn, setConn] = useState<WebSocket | null>(null);
 
 
   useEffect(()=>{
@@ -24,6 +25,7 @@ function App() {
         console.error("This browser does not support websockets");
         setErrorMessage("This browser does not support websockets");
     }
+    setConn(conn);
   },[]);
 
 
