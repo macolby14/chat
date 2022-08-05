@@ -4,11 +4,15 @@ import './Global.css'
 import './App.css';
 import { ChatWindow } from "./components/ChatWindow"
 import { UserWindow } from './components/UserWindow';
-import { RecoilRoot } from 'recoil';
+import { RecoilRoot, useRecoilState } from 'recoil';
+import { wsState } from './atoms';
+
+
+
 
 function App() {
   const [errorMessage, setErrorMessage] = useState("");
-  const [conn, setConn] = useState<WebSocket | null>(null);
+  const [ws, setWs] = useRecoilState(wsState);
 
 
   useEffect(()=>{
@@ -22,11 +26,15 @@ function App() {
           const messages = evt.data.split('\n');
           console.log("Received messages: "+messages);
       };
+      setWs(conn);
     } else {
         console.error("This browser does not support websockets");
         setErrorMessage("This browser does not support websockets");
     }
-    setConn(conn);
+    
+    return () =>{
+      setWs(null);
+    }
   },[]);
 
 
