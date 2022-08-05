@@ -1,46 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import './Reset.css'
-import './Global.css'
-import './App.css';
-import { ChatWindow } from "./components/ChatWindow"
-import { UserWindow } from './components/UserWindow';
-import { RecoilRoot, useRecoilState } from 'recoil';
-import { wsState } from './atoms';
-
-
-
+import React, { useEffect, useState } from "react";
+import "./Reset.css";
+import "./Global.css";
+import "./App.css";
+import { ChatWindow } from "./components/ChatWindow";
+import { UserWindow } from "./components/UserWindow";
+import { useSetRecoilState } from "recoil";
+import { wsState } from "./atoms";
 
 function App() {
   const [errorMessage, setErrorMessage] = useState("");
-  const [ws, setWs] = useRecoilState(wsState);
+  const setWs = useSetRecoilState(wsState);
 
-
-  useEffect(()=>{
+  useEffect(() => {
     if (window["WebSocket"]) {
       const conn = new WebSocket("ws://127.0.0.1:8000/ws");
       conn.onclose = function (evt) {
-          console.error("Lost connection to server.");
-          setErrorMessage("Lost connection to server.");
+        console.error("Lost connection to server.");
+        setErrorMessage("Lost connection to server.");
       };
       conn.onmessage = function (evt) {
-          const messages = evt.data.split('\n');
-          console.log("Received messages: "+messages);
+        const messages = evt.data.split("\n");
+        console.log("Received messages: " + messages);
       };
       setWs(conn);
     } else {
-        console.error("This browser does not support websockets");
-        setErrorMessage("This browser does not support websockets");
+      console.error("This browser does not support websockets");
+      setErrorMessage("This browser does not support websockets");
     }
-    
-    return () =>{
-      setWs(null);
-    }
-  },[]);
 
+    return () => {
+      setWs(null);
+    };
+  }, [setWs]); //setWs is guarstable
 
   return (
-    <RecoilRoot>
-    {errorMessage && (<div>{errorMessage}</div>)}
+    <>
+      {errorMessage && <div>{errorMessage}</div>}
       <div className="App">
         <div className="ChatWindowContainer">
           <ChatWindow />
@@ -49,7 +44,7 @@ function App() {
           <UserWindow />
         </div>
       </div>
-    </RecoilRoot>
+    </>
   );
 }
 
