@@ -4,16 +4,20 @@ import "./Global.css";
 import "./App.css";
 import { ChatWindow } from "./components/ChatWindow";
 import { UserWindow } from "./components/UserWindow";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { wsState } from "./atoms";
+import { connect } from "http2";
 
 function App() {
   const [errorMessage, setErrorMessage] = useState("");
-  const setWs = useSetRecoilState(wsState);
+  const [ws, setWs] = useRecoilState(wsState);
 
   useEffect(() => {
-    if (window["WebSocket"]) {
-      const conn = new WebSocket("ws://127.0.0.1:8000/ws");
+    let conn: WebSocket | null;
+
+    if (ws == null && window["WebSocket"]) {
+      conn = new WebSocket("ws://127.0.0.1:8000/ws");
+      console.log("Creating a new websocket connection");
       conn.onclose = function (evt) {
         console.error("Lost connection to server.");
         setErrorMessage("Lost connection to server.");
@@ -23,12 +27,14 @@ function App() {
         console.log("Received messages: " + messages);
       };
       setWs(conn);
+      setErrorMessage("");
     } else {
       console.error("This browser does not support websockets");
       setErrorMessage("This browser does not support websockets");
     }
 
     return () => {
+      conn?.close();
       setWs(null);
     };
   }, [setWs]); //setWs is guarstable
