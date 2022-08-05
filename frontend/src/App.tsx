@@ -4,6 +4,7 @@ import './Global.css'
 import './App.css';
 import { ChatWindow } from "./components/ChatWindow"
 import { UserWindow } from './components/UserWindow';
+import { RecoilRoot } from 'recoil';
 
 function App() {
   const [errorMessage, setErrorMessage] = useState("");
@@ -30,7 +31,7 @@ function App() {
 
 
   return (
-    <>
+    <RecoilRoot>
     {errorMessage && (<div>{errorMessage}</div>)}
       <div className="App">
         <div className="ChatWindowContainer">
@@ -40,7 +41,7 @@ function App() {
           <UserWindow />
         </div>
       </div>
-    </>
+    </RecoilRoot>
   );
 }
 
