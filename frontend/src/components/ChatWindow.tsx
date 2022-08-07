@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { wsState } from "../atoms";
 import "./ChatWindow.css";
@@ -13,7 +13,36 @@ export function ChatWindow() {
 }
 
 export function MessageHistory() {
-  return <div className="MessageHistory">Message History</div>;
+  const ws = useRecoilValue(wsState);
+  const [log, setLog] = useState<string[]>([]);
+
+  useEffect(() => {
+    const handleMessage = (e: MessageEvent<any>) => {
+      const messages = e.data.split("\n");
+      console.log(
+        "Message History Received message. Received messages: " + messages
+      );
+      setLog((prev) => [...prev, ...messages]);
+    };
+
+    if (ws) {
+      ws.addEventListener("message", handleMessage);
+    }
+
+    return () => {
+      ws?.removeEventListener("message", handleMessage);
+    };
+  }, [ws]);
+
+  return (
+    <div className="MessageHistory">
+      <ul>
+        {log.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
 export function MessageInput() {

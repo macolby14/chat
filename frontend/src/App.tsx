@@ -19,10 +19,6 @@ function App() {
         console.error("Lost connection to server.");
         setErrorMessage("Lost connection to server.");
       };
-      conn.onmessage = function (evt) {
-        const messages = evt.data.split("\n");
-        console.log("Received messages: " + messages);
-      };
       setWs(conn);
       setErrorMessage("");
     } else {
