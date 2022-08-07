@@ -4,18 +4,15 @@ import "./Global.css";
 import "./App.css";
 import { ChatWindow } from "./components/ChatWindow";
 import { UserWindow } from "./components/UserWindow";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { wsState } from "./atoms";
-import { connect } from "http2";
-
 function App() {
   const [errorMessage, setErrorMessage] = useState("");
-  const [ws, setWs] = useRecoilState(wsState);
+  const setWs = useSetRecoilState(wsState);
 
   useEffect(() => {
     let conn: WebSocket | null;
-
-    if (ws == null && window["WebSocket"]) {
+    if (window["WebSocket"]) {
       conn = new WebSocket("ws://127.0.0.1:8000/ws");
       console.log("Creating a new websocket connection");
       conn.onclose = function (evt) {
@@ -37,7 +34,7 @@ function App() {
       conn?.close();
       setWs(null);
     };
-  }, [setWs]); //setWs is guarstable
+  }, [setWs]);
 
   return (
     <>
