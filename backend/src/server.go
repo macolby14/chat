@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
 )
 
 // spaHandler implements the http.Handler interface, so we can use it
@@ -56,11 +57,17 @@ func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	log.Println("Starting server...")
+
+	//router setup
 	router := mux.NewRouter()
 
 	// chat setup
 	hub := newHub()
 	go hub.run()
+
+	// session setup
+	store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+
 
 	router.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		serveWs(hub, w, r)
@@ -69,6 +76,22 @@ func main() {
 	router.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {
 		// an example API handler
 		json.NewEncoder(w).Encode(map[string]bool{"ok": true})
+	})
+
+
+	router.HandleFunc("/api/session", func(w http.ResponseWriter, r *http.Request) {
+		session, err := store.Get(r, "chat-session")
+		if err != nil {
+			log.Println("Could not decode existing session. Creating new session")
+		}
+
+
+		session.Values["userId"] = "test-user-id"
+		err = session.Save(r, w)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	})
 
 	spa := spaHandler{staticPath: "../../frontend/build", indexPath: "index.html"}
