@@ -13,7 +13,7 @@ function App() {
   useEffect(() => {
     let conn: WebSocket | null;
     if (window["WebSocket"]) {
-      conn = new WebSocket("ws://127.0.0.1:8000/ws");
+      conn = new WebSocket("ws://localhost:3000/chatWs");
       console.log("Creating a new websocket connection");
       conn.onclose = function (evt) {
         console.error("Lost connection to server.");

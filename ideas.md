@@ -39,3 +39,8 @@
 ## Frontend
 
 - show the updated user list
+
+## Proxying
+
+- https://create-react-app.dev/docs/proxying-api-requests-in-development/
+- Simple proxy config for websockets does not work https://stackoverflow.com/questions/58088218/websockets-in-create-react-app-with-webpack-proxy/67177366#67177366

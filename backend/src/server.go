@@ -69,7 +69,7 @@ func main() {
 	store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 
 
-	router.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/chatWs", func(w http.ResponseWriter, r *http.Request) {
 		serveWs(hub, w, r)
 	})
 
@@ -99,7 +99,7 @@ func main() {
 
 	srv := &http.Server{
 		Handler: router,
-		Addr:    "127.0.0.1:8000",
+		Addr:    "localhost:8000",
 		// Good practice: enforce timeouts for servers you create!
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
