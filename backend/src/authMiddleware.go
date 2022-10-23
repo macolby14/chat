@@ -11,10 +11,13 @@ import (
 // Define our struct
 type authenticationMiddleware struct {
 	store *sessions.CookieStore
+	uf *UserFactory
 }
 
 // Initialize it somewhere
 func (amw *authenticationMiddleware) Init() {
+
+	amw.uf = newUserFactory()
 
 	// session setup
 	amw.store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
@@ -29,12 +32,15 @@ func (amw *authenticationMiddleware) Middleware(next http.Handler) http.Handler 
 			log.Println("Could not decode existing session. Creating new session")
 		}
 
+		if _, ok := session.Values["user"]; !ok {
+			name := amw.uf.getUserName()
+			session.Values["user"] = name
 
-		session.Values["userId"] = "test-user-id"
-		err = session.Save(r, w)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+			err = session.Save(r, w)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
 		}
 
 		next.ServeHTTP(w,r)
