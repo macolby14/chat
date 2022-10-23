@@ -40,8 +40,7 @@ func (amw *authenticationMiddleware) Middleware(next http.Handler) http.Handler 
 		}
 
 		if _, ok := session.Values["user"]; !ok {
-			name := amw.uf.getUserName()
-			session.Values["user"] = newUser(name)
+			session.Values["user"] = amw.uf.createUser()
 
 			err = session.Save(r, w)
 			if err != nil {

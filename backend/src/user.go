@@ -16,7 +16,7 @@ func newUser(name string) *User{
 
 
 type UserFactory struct {
-	users 		[]string
+	users 		[]*User
 	i 			int
 }
 
@@ -39,14 +39,14 @@ func newUserFactory() *UserFactory {
 
 	for _, noun := range nouns {
 		for _, adj := range adjectives {
-			u.users = append(u.users, noun+adj)
+			u.users = append(u.users, newUser(noun+adj))
 		}
 	}
 
 	return u
 }
 
-func (uf *UserFactory) getUserName() string {
+func (uf *UserFactory) createUser() *User {
 	ind := uf.i
 	uf.i++
 	return uf.users[ind]
