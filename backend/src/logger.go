@@ -2,20 +2,20 @@ package main
 
 import "log"
 
-type logger struct{
+type Logger struct{
 	Name string
-	isOn bool
+	IsOn bool
 }
 
-func (l *logger) log(format string, v ...any){
-	if l.isOn{
+func (l *Logger) log(format string, v ...any){
+	if l.IsOn{
 		log.Printf(format, v...)
 	}
 }
 
 
-func (l *logger) warn(format string, v ...any){
-	if l.isOn{
+func (l *Logger) warn(format string, v ...any){
+	if l.IsOn{
 		log.Fatalf(format, v...)
 	}
 }

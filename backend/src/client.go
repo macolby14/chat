@@ -38,6 +38,11 @@ var upgrader = websocket.Upgrader{
 	CheckOrigin:     func(r *http.Request) bool { return true },
 }
 
+var clientLogger = &Logger{
+	IsOn: true,
+	Name: "client",
+}
+
 // Client is a middleman between the websocket connection and the hub.
 type Client struct {
 	hub *Hub
@@ -134,6 +139,8 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		send: make(chan []byte, 256),
 		user: getUserFromRequest(r),
 	}
+
+	clientLogger.log("client.user: %v\n",client.user)
 
 	client.hub.register <- client
 
