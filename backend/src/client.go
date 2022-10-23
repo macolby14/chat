@@ -49,7 +49,7 @@ type Client struct {
 	// The websocket connection.
 	conn *websocket.Conn
 	// Buffered channel of outbound messages.
-	send chan []byte
+	send chan *Message
 	user *User
 }
 
@@ -76,7 +76,7 @@ func (c *Client) readPump() {
 			break
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
-		c.hub.broadcast <- message
+		c.hub.broadcast <- newMessage(message,c.user)
 	}
 }
 
@@ -105,13 +105,14 @@ func (c *Client) writePump() {
 			if err != nil {
 				return
 			}
-			w.Write(message)
+			w.Write(message.Text)
 
 			// Add queued chat messages to the current websocket message.
 			n := len(c.send)
 			for i := 0; i < n; i++ {
 				w.Write(newline)
-				w.Write(<-c.send)
+				nextMessage := <-c.send
+				w.Write(nextMessage.Text)
 			}
 
 			if err := w.Close(); err != nil {
@@ -136,7 +137,7 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	client := &Client{
 		hub: hub, 
 		conn: conn, 
-		send: make(chan []byte, 256),
+		send: make(chan *Message, 256),
 		user: getUserFromRequest(r),
 	}
 
