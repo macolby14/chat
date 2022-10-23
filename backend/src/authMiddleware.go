@@ -4,14 +4,10 @@ import (
 	"encoding/gob"
 	"log"
 	"net/http"
-	"os"
-
-	"github.com/gorilla/sessions"
 )
 
 // Define our struct
 type authenticationMiddleware struct {
-	store *sessions.CookieStore
 	uf *UserFactory
 }
 
@@ -25,16 +21,13 @@ func (amw *authenticationMiddleware) Init() {
 	gob.Register(User{})
 
 	amw.uf = newUserFactory()
-
-	// session setup
-	amw.store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 }
 
 // Middleware function, which will be called for each request
 func (amw *authenticationMiddleware) Middleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		session, err := amw.store.Get(r, "session")
+		session, err := store.Get(r, "session")
 		if err != nil {
 			log.Println("Could not decode existing session. Creating new session")
 		}
@@ -49,8 +42,17 @@ func (amw *authenticationMiddleware) Middleware(next http.Handler) http.Handler 
 			}
 		}
 
-		log.Printf("User:%v\n",session.Values["user"])
-
 		next.ServeHTTP(w,r)
     })
+}
+
+func getUserFromRequest(r *http.Request) *User{
+	session, err := store.Get(r, "session")
+	if err != nil {
+		log.Println("Could not decode existing session. Creating new session")
+	}
+
+ 	user := session.Values["user"].(User)
+	return &user
+
 }

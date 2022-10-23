@@ -9,7 +9,13 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
 )
+
+/*
+Global variables
+*/
+var store *sessions.CookieStore
 
 // spaHandler implements the http.Handler interface, so we can use it
 // to respond to HTTP requests. The path to the static directory and
@@ -57,12 +63,17 @@ func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func main() {
 	log.Println("Starting server...")
 
+
 	//router setup
 	router := mux.NewRouter()
 
 	// chat setup
 	hub := newHub()
 	go hub.run()
+
+	// cookie store
+	store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+
 
 	//auth middleware
 	amw := &authenticationMiddleware{}
