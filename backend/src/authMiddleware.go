@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/gob"
 	"log"
 	"net/http"
 	"os"
@@ -16,6 +17,12 @@ type authenticationMiddleware struct {
 
 // Initialize it somewhere
 func (amw *authenticationMiddleware) Init() {
+
+	/* gob setup
+	  	avoid securecookie: error - caused by: securecookie: error - caused by: gob: type not registered for interface: main.User
+		from gorilla/sessions dependency
+	*/
+	gob.Register(User{})
 
 	amw.uf = newUserFactory()
 
@@ -34,7 +41,7 @@ func (amw *authenticationMiddleware) Middleware(next http.Handler) http.Handler 
 
 		if _, ok := session.Values["user"]; !ok {
 			name := amw.uf.getUserName()
-			session.Values["user"] = name
+			session.Values["user"] = newUser(name)
 
 			err = session.Save(r, w)
 			if err != nil {
@@ -42,6 +49,8 @@ func (amw *authenticationMiddleware) Middleware(next http.Handler) http.Handler 
 				return
 			}
 		}
+
+		log.Printf("User:%v\n",session.Values["user"])
 
 		next.ServeHTTP(w,r)
     })

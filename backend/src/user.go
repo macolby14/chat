@@ -1,5 +1,20 @@
 package main
 
+import "github.com/gorilla/sessions"
+
+type User struct {
+	Name string
+	Sessions []*sessions.Session
+}
+
+func newUser(name string) *User{
+	return &User{
+		Name: name,
+		Sessions: make([]*sessions.Session, 0),
+	}
+}
+
+
 type UserFactory struct {
 	users 		[]string
 	i 			int
