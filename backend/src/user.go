@@ -1,6 +1,10 @@
 package main
 
-import "github.com/gorilla/sessions"
+import (
+	"strconv"
+
+	"github.com/gorilla/sessions"
+)
 
 type User struct {
 	Name string
@@ -21,7 +25,7 @@ type UserFactory struct {
 }
 
 func newUserFactory() *UserFactory {
-	u := &UserFactory{}
+	uf := &UserFactory{}
 	nouns := []string{
 		"giraffe",
 		"cheetah",
@@ -37,13 +41,16 @@ func newUserFactory() *UserFactory {
 		"clever",
 	}
 
+	ct := 0
+
 	for _, noun := range nouns {
 		for _, adj := range adjectives {
-			u.users = append(u.users, newUser(noun+adj))
+			uf.users = append(uf.users, newUser(noun+"-"+adj+"-"+strconv.Itoa(ct)))
+			ct++
 		}
 	}
 
-	return u
+	return uf
 }
 
 func (uf *UserFactory) createUser() *User {

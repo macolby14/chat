@@ -33,7 +33,8 @@ func (amw *authenticationMiddleware) Middleware(next http.Handler) http.Handler 
 		}
 
 		if _, ok := session.Values["user"]; !ok {
-			session.Values["user"] = amw.uf.createUser()
+			// need to dereference the pointer for storage in the session
+			session.Values["user"] = *amw.uf.createUser()
 
 			err = session.Save(r, w)
 			if err != nil {
@@ -52,7 +53,12 @@ func getUserFromRequest(r *http.Request) *User{
 		log.Println("Could not decode existing session. Creating new session")
 	}
 
- 	user := session.Values["user"].(User)
-	return &user
+	var user interface{}
+	var ok bool
+ 	if user, ok = session.Values["user"]; !ok {
+		log.Fatalf("No user value assigned to session")
+	}
 
+	var userTyped User = (user).(User)
+	return &userTyped
 }
