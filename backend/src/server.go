@@ -80,7 +80,7 @@ func main() {
 
 
 	router.HandleFunc("/api/session", func(w http.ResponseWriter, r *http.Request) {
-		session, err := store.Get(r, "chat-session")
+		session, err := store.Get(r, "session")
 		if err != nil {
 			log.Println("Could not decode existing session. Creating new session")
 		}
